@@ -5,8 +5,9 @@ const app = express()
 app.use(cors())
 app.options('*', cors())
 
-app.post('/', function (req, res) {
-    res.send('Hello World!')
+app.get('/', function (req, res) {
+    const businessNumber = req.query.businessNumber
+    res.send(`Hello World! ${ businessNumber }`)
 })
 
 app.listen(3000, function () {
