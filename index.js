@@ -1,14 +1,9 @@
 const express = require('express')
-var cors = require('cors')
+const route = require('./routes')
 const app = express()
 
-app.use(cors())
-app.options('*', cors())
 
-app.get('/', function (req, res) {
-    const businessNumber = req.query.businessNumber
-    res.send(`Hello World! ${ businessNumber }`)
-})
+app.get('/', route.getMcc)
 
 app.listen(3000, function () {
     console.log('Example app listening on port 3000!')
