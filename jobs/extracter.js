@@ -4,6 +4,7 @@
 const crypto = require('crypto')
 const fs = require('fs')
 const chokidar = require('chokidar')
+const { File } = require('../models')
 const unrar = require('./unrar')
 const conf = require('../config/job')
 const logger = require('../utils/logger')
@@ -22,6 +23,33 @@ function md5File(cb) {
   })
 }
 
+function saveFile(filePath, md5) {
+  return new Promise(function () {
+    file = new File({ filePath, md5 })
+
+    file.save(function (err) {
+      if (err) {
+        logger.log('Save Error: ', err)
+        return Promise.reject()
+      }
+
+      logger.log('file has saved in mongo.')
+    })
+  })
+}
+
+function updateFile(filePath, md5, file) {
+  return new Promise(function () {
+    file.update({ filePath }, { md5 }, function (err) {
+      if (err) {
+        logger.log('Update Error: ', err)
+        return Promise.reject()
+      }
+      logger.log('file has updated in mongo.')
+    })
+  })
+}
+
 function extract() {
   logger.log('start extract ...')
   unrar(conf.rarFilePath, conf.txtDataFileDir)
@@ -34,18 +62,32 @@ function start() {
 
   watcher.on('change', path => {
     // todo: get oldMd5 from mongo
-    const oldMd5 = '7f1ada111c8785451a3123cb2c5c182f'
+    File.findOne({ filePath: path}, function (err, file) {
+      if (file) {
+        const cb = function (md5) {
+          if (md5 !== file.md5) {
+            logger.log(`${path} has changed.`)
+            updateFile(path, md5, file)
+              .then(() => {
+                extract()
+              })
+          } else {
+            logger.log(`${path} not changed`)
+          }
+        }
 
-    const cb = function (md5) {
-      if (md5 !== oldMd5) {
-        logger.log(`${path} has changed.`)
-        extract()
+        md5File(cb)
       } else {
-        logger.log(`${path} not changed`)
-      }
-    }
+        const cb = function (md5) {
+          saveFile(path, md5)
+            .then(() => {
+              extract()
+            })
+        }
 
-    md5File(cb)
+        md5File(cb)
+      }
+    })
   })
 }
 

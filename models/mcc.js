@@ -9,8 +9,4 @@ const MccSchema = new Schema({
   id: {type: ObjectId, index:true},
 })
 
-const Mcc = mongoose.model('Mcc', MccSchema)
-
-module.exports = {
-  Mcc
-}
+module.exports = mongoose.model('Mcc', MccSchema)

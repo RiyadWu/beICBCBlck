@@ -15,7 +15,9 @@ mongoose.connect(dbConfig.dbPath, {
 })
 
 const Mcc = require('./mcc')
+const File = require('./file')
 
 module.exports = {
-  Mcc
+  Mcc,
+  File
 }
