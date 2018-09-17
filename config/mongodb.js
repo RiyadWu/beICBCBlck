@@ -4,5 +4,9 @@
 const dbPath = 'mongodb://localhost:27017/test'
 
 module.exports = {
-  dbPath
+  dbPath: 'mongodb://localhost:27017/test',
+  connectConf: {
+    poolSize: 40,
+    keepAlive: 120
+  }
 }

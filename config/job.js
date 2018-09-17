@@ -4,6 +4,6 @@
 module.exports = {
   rarFilePath: './data/JFmch_nbr.rar',
   txtDataFileDir: './data/txt/',
-  processedDataFileDir: './data/processed',
+  processedDataFileDir: './data/processed/',
   downloadUrl: 'http://market.cmbchina.com/ccard/jf/JFmch_nbr.rar'
 }

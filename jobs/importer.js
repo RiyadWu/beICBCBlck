@@ -5,6 +5,7 @@ const fs = require('fs')
 const readline = require('readline')
 const iconv = require('iconv-lite')
 const chokidar = require('chokidar')
+const mv = require('mv')
 const { Mcc } = require('../models')
 const logger = require('../utils/logger')
 const conf = require('../config/job')
@@ -33,6 +34,19 @@ function bulkInsert(bulkToInsert) {
   })
 }
 
+function bulkInsertPromise(arr, start = 0) {
+  const end = start + batchSize
+  Mcc.insertMany(arr.slice(start, end))
+    .then(() => {
+      logger.log('Bulk insert done!')
+      if (start < arr.length) {
+        bulkInsertPromise(arr, end)
+      }
+    }, () => {
+      logger.log('Bulk insert error! Error is: ', err)
+    })
+}
+
 function importData() {
   getFileList(conf.txtDataFileDir, files => {
     files.forEach(file => {
@@ -44,6 +58,7 @@ function importData() {
       }
 
       const path = conf.txtDataFileDir + file
+      const processedPath = conf.processedDataFileDir + file
       const lineReader = readline.createInterface({
         input: fs.createReadStream(path).pipe(iconv.decodeStream('gbk'))
       })
@@ -64,7 +79,15 @@ function importData() {
         logger.log('file close')
         if (arr.length > 0) {
           bulkInsert(arr)
+          // bulkInsertPromise(arr)
         }
+        mv(path, processedPath, function(err) {
+          if (err) {
+            logger.log('mv file failed.')
+          } else {
+            logger.log(`File ${file} has been moved successfully.`)
+          }
+        })
       })
     })
   })
