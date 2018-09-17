@@ -8,7 +8,8 @@ const ObjectId = Schema.ObjectId
 const MccSchema = new Schema({
   id: { type: ObjectId, index:true },
   mcc: { type: String, index:true },
-  shop: { type: String }
+  shop: { type: String },
+  month: { type: String }
 })
 
 module.exports = mongoose.model('Mcc', MccSchema)

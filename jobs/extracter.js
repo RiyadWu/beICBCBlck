@@ -68,7 +68,7 @@ function start() {
     File.findOne({ filePath: path}, function (err, file) {
       if (file) {
         const cb = function (md5) {
-          if (md5 === file.md5) {
+          if (md5 !== file.md5) {
             logger.log(`${path} has changed.`)
             updateFile(path, md5, file, extract)
           } else {

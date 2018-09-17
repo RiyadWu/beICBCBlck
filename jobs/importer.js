@@ -57,6 +57,7 @@ function importData() {
         fileProcessed[file] = true
       }
 
+      const month = file.substr(0, 8)
       const path = conf.txtDataFileDir + file
       const processedPath = conf.processedDataFileDir + file
       const lineReader = readline.createInterface({
@@ -66,7 +67,7 @@ function importData() {
 
       lineReader.on('line', function (line) {
         const [mcc, shop] = line.split(',')
-        arr.push({ mcc, shop })
+        arr.push({ mcc, shop, month })
         if (arr.length === batchSize) {
           const bulkToInsert = [].concat(arr)
 

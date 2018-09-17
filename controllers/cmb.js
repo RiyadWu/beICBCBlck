@@ -1,12 +1,17 @@
 /**
  * Created by cheewu on 2018/9/12.
  */
-const models = require('../models')
+const { Mcc } = require('../models')
 const logger = require('../utils/logger')
 
 function getMcc(req, res, next) {
   logger.log('getMcc')
-  return res.send(400..toString())
+  const mcc = req.query.businessNumber
+  Mcc.find({ mcc }).then(docs => {
+    return res.send(docs)
+  }, err => {
+    return res.send(err)
+  })
 }
 
 module.exports = {
