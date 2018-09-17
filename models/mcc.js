@@ -6,7 +6,9 @@ const Schema = mongoose.Schema
 const ObjectId = Schema.ObjectId
 
 const MccSchema = new Schema({
-  id: {type: ObjectId, index:true},
+  id: { type: ObjectId, index:true },
+  mcc: { type: String, index:true },
+  shop: { type: String }
 })
 
 module.exports = mongoose.model('Mcc', MccSchema)

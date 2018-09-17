@@ -23,9 +23,9 @@ function md5File(cb) {
   })
 }
 
-function saveFile(filePath, md5) {
+function saveFile(filePath, md5, callback) {
   return new Promise(function () {
-    file = new File({ filePath, md5 })
+    const file = new File({ filePath, md5 })
 
     file.save(function (err) {
       if (err) {
@@ -34,11 +34,13 @@ function saveFile(filePath, md5) {
       }
 
       logger.log('file has saved in mongo.')
+
+      callback()
     })
   })
 }
 
-function updateFile(filePath, md5, file) {
+function updateFile(filePath, md5, file, callback) {
   return new Promise(function () {
     file.update({ filePath }, { md5 }, function (err) {
       if (err) {
@@ -46,6 +48,7 @@ function updateFile(filePath, md5, file) {
         return Promise.reject()
       }
       logger.log('file has updated in mongo.')
+      callback()
     })
   })
 }
@@ -65,12 +68,9 @@ function start() {
     File.findOne({ filePath: path}, function (err, file) {
       if (file) {
         const cb = function (md5) {
-          if (md5 !== file.md5) {
+          if (md5 === file.md5) {
             logger.log(`${path} has changed.`)
-            updateFile(path, md5, file)
-              .then(() => {
-                extract()
-              })
+            updateFile(path, md5, file, extract)
           } else {
             logger.log(`${path} not changed`)
           }
@@ -79,10 +79,7 @@ function start() {
         md5File(cb)
       } else {
         const cb = function (md5) {
-          saveFile(path, md5)
-            .then(() => {
-              extract()
-            })
+          saveFile(path, md5, extract)
         }
 
         md5File(cb)
