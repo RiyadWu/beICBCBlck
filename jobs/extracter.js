@@ -55,7 +55,14 @@ function updateFile(filePath, md5, file, callback) {
 
 function extract() {
   logger.log('start extract ...')
-  unrar(conf.rarFilePath, conf.txtDataFileDir)
+
+  const { rarFilePath, txtDataFileDir } = conf
+
+  if (!fs.existsSync(txtDataFileDir)) {
+    fs.mkdirSync(txtDataFileDir)
+  }
+
+  unrar(rarFilePath, txtDataFileDir)
   logger.log('extract done!')
 }
 

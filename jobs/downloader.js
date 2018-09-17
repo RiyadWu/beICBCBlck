@@ -12,6 +12,10 @@ function download() {
   logger.log('start download...')
   const url = conf.downloadUrl
   const dest = conf.rarFilePath
+  const dataDir = conf.dataDir
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir)
+  }
   const file = fs.createWriteStream(dest)
   const request = http.get(url, function(response) {
     response.pipe(file)

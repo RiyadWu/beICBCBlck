@@ -58,8 +58,9 @@ function importData() {
       }
 
       const month = file.substr(0, 8)
+      const processedDir = conf.processedDataFileDir
+      const processedPath = processedDir + file
       const path = conf.txtDataFileDir + file
-      const processedPath = conf.processedDataFileDir + file
       const lineReader = readline.createInterface({
         input: fs.createReadStream(path).pipe(iconv.decodeStream('gbk'))
       })
@@ -82,6 +83,11 @@ function importData() {
           bulkInsert(arr)
           // bulkInsertPromise(arr)
         }
+
+        if (!fs.existsSync(processedDir)) {
+          fs.mkdirSync(processedDir)
+        }
+
         mv(path, processedPath, function(err) {
           if (err) {
             logger.log('mv file failed.')

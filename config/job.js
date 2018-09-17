@@ -2,6 +2,7 @@
  * Created by cheewu on 2018/9/13.
  */
 module.exports = {
+  dataDir: './data',
   rarFilePath: './data/JFmch_nbr.rar',
   txtDataFileDir: './data/txt/',
   processedDataFileDir: './data/processed/',
