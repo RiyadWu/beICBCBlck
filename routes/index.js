@@ -4,6 +4,10 @@
 const cmb = require('../controllers/cmb')
 const getMcc = cmb.getMcc
 
+const mfh = require('../controllers/mfh')
+const minilistSs = mfh.minilistSs
+
 module.exports = {
-  getMcc
+  getMcc,
+  minilistSs
 }

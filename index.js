@@ -3,9 +3,10 @@ const route = require('./routes')
 const jobManager = require('./jobs')
 const app = express()
 
-jobManager.start()
+// jobManager.start()
 
 app.get('/', route.getMcc)
+app.get('/minilistSs', route.minilistSs)
 
 app.listen(3000, function () {
     console.log('Example app listening on port 3000!')
